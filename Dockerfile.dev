@@ -1,0 +1,24 @@
+FROM ubuntu:24.04
+
+RUN apt-get update -y && \
+    apt-get install -y dictd dict dict-wn python3-pip python3-venv
+
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY requirements.txt /tmp/
+RUN pip install -r /tmp/requirements.txt
+
+COPY dic_es.dict.dz /usr/share/dictd/
+COPY dic_es.index /usr/share/dictd/
+RUN dictdconfig --write && service dictd restart
+
+WORKDIR /app
+EXPOSE 5000
+
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["python3", "--bind", "0.0.0.0:5000", "--workers", "3", "app:app"]
+

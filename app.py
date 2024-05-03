@@ -3,19 +3,16 @@ import socket
 
 app = Flask(__name__)
 
-def query_dictd(word):
+def query_dictd(word, language):
+    database = "wm" if language == "en" else "dic_es"
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        # Connect to the dictd server running on the same machine
         sock.connect(('127.0.0.1', 2628))
 
-        # Send the request for definitions according to the DICT protocol
-        request = f"DEFINE * {word}\r\n"
+        request = f"DEFINE {database} {word}\r\n"
         sock.sendall(request.encode('utf-8'))
 
-        # Terminate the sending side to signify end of request
         sock.shutdown(socket.SHUT_WR)
 
-        # Collect the response
         response = []
         while True:
             data = sock.recv(4096)
@@ -28,13 +25,13 @@ def query_dictd(word):
 @app.route('/meaning', methods=['GET'])
 def get_meaning():
     word = request.args.get('word')
+    language = request.args.get('lang', 'en')  
     if not word:
         return jsonify({"error": "No word provided"}), 400
 
     try:
-        # Query the dictd server for the meaning
-        result = query_dictd(word)
-        return jsonify({"word": word, "meaning": result})
+        result = query_dictd(word, language)
+        return jsonify({"word": word, "meaning": result, "language": language, "hola": "hola"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
