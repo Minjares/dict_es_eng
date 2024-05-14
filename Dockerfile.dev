@@ -20,5 +20,5 @@ COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-CMD ["python3", "--bind", "0.0.0.0:5000", "--workers", "3", "app:app"]
+CMD ["python3", "app.py"]
 

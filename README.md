@@ -25,7 +25,7 @@ docker build -t diccionario -f Dockerfile.dev .
 #### Despliegue de imagen de Docker en dev
 
 ```bash
-docker run -p 5000:5000 -v $(pwd):/app diccionario
+docker run -p 5000:5000 -v "$(PWD)":/app diccionario
 ```
 
 #### Despliegue de imagen de Docker en producción
