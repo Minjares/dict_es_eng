@@ -14,7 +14,7 @@ COPY dic_es.index /usr/share/dictd/
 RUN dictdconfig --write && service dictd restart
 
 WORKDIR /app
-EXPOSE 5000
+EXPOSE 5001
 
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
